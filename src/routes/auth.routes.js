@@ -8,7 +8,7 @@ const authRouter = Router();
  * @description Register a new user
  * @access Public
 */
-authRouter.post("/register",)
+authRouter.post("/register", authController.registerUserController)
 
 
 module.exports = authRouter
