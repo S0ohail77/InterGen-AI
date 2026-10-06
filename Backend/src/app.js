@@ -20,7 +20,10 @@ app.use(cors({
     credentials: true
 }))
 
-/* DB connect (serverless ke liye, har request pe ek baar) */
+/* health check (DB pe depend nahi karta) */
+app.get("/", (req, res) => res.json({ status: "ok" }))
+
+/* DB connect (serverless ke liye, ek baar) */
 let dbPromise
 app.use(async (req, res, next) => {
     try {
@@ -29,12 +32,12 @@ app.use(async (req, res, next) => {
         next()
     } catch (err) {
         dbPromise = null
-        next(err)
+        console.error("DB connection failed:", err.message)
+        res.status(500).json({ message: "Database connection failed", error: err.message })
     }
 })
 
-app.get("/", (req, res) => res.json({ status: "ok" }))
-
+/* routes */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
 
